@@ -153,6 +153,105 @@ $(document).ready(function () {
         }
     });
 
+    //////////////////////////VALIDACIÓN
+    function setError($el, msg) {
+        $el.addClass('is-invalid');
+        $el.next('.invalid-feedback').text(msg).show();
+    }
+
+    function clearError($el) {
+        $el.removeClass('is-invalid');
+        $el.next('.invalid-feedback').text('').hide();
+    }
+
+    // -------- VALIDACIONES BLUR --------
+
+    $('#nombre').blur(function () {
+        const v = $(this).val().trim();
+        if (v === '' || v.length > 100) {
+            setError($(this), 'Nombre obligatorio (máx 100).');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    $('#autor').blur(function () {
+        const v = $(this).val().trim();
+        if (v === '' || v.length > 150) {
+            setError($(this), 'Autor obligatorio (máx 150).');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    $('#departamento').blur(function () {
+        const v = $(this).val().trim();
+        if (v === '' || v.length > 150) {
+            setError($(this), 'Departamento obligatorio (máx 150).');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    $('#empresa').blur(function () {
+        const v = $(this).val().trim();
+        if (v === '' || v.length > 150) {
+            setError($(this), 'Empresa obligatoria (máx 150).');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    $('#descripcion').blur(function () {
+        const v = $(this).val().trim();
+        if (v === '' || v.length > 250) {
+            setError($(this), 'Descripción obligatoria (máx 250).');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    $('#tipo').blur(function () {
+        const v = $(this).val().trim();
+        if (v === '') {
+            setError($(this), 'Tipo obligatorio.');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    $('#lenguaje').blur(function () {
+        const v = $(this).val().trim();
+        if (v === '' || v.length > 50) {
+            setError($(this), 'Lenguaje obligatorio (máx 50).');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    $('#fecha_creacion').blur(function () {
+        const v = $(this).val().trim();
+        if (v === '') {
+            setError($(this), 'Fecha obligatoria.');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    $('#archivo').blur(function () {
+        const f = $(this)[0].files[0];
+        if (!edit && !f) {
+            setError($(this), 'Documento obligatorio.');
+        } else {
+            clearError($(this));
+        }
+    });
+
+    // -------- FIN VALIDACIONES BLUR --------
+
+
+    //////////////////////////VALIDACIÓN
+
     // SUBMIT FORM (tu misma lógica)
     $('#recurso-form').submit(e => {
         e.preventDefault();
@@ -172,12 +271,19 @@ $(document).ready(function () {
             errores.push('->Selecciona un archivo.');
 
         if (errores.length > 0) {
-            let template_bar = '<li style="list-style:none; font-weight:bold;">Error de envío:</li>';
-            errores.forEach(err => template_bar += `<li style="list-style:none;">${err}</li>`);
-            $('#recurso-result').show();
-            $('#container').html(template_bar);
+            // solo marcamos inputs en rojo, sin barra
+            $('#nombre').blur();
+            $('#autor').blur();
+            $('#departamento').blur();
+            $('#empresa').blur();
+            $('#fecha_creacion').blur();
+            $('#descripcion').blur();
+            $('#tipo').blur();
+            $('#lenguaje').blur();
+            $('#archivo').blur();
             return;
         }
+
 
         let formData = new FormData();
         formData.append('nombre', $('#nombre').val());
