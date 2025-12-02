@@ -22,12 +22,11 @@ $(document).ready(function () {
             success: function (response) {
                 const recursos = safeParse(response) || [];
 
-                if (Object.keys(recursos).length > 0) {
+                if (recursos.length > 0) {
                     let templateAdmin = '';
                     let templateCatalogo = '';
 
                     recursos.forEach(r => {
-                        // ---- ADMIN ----
                         let descripcionAdmin = '';
                         descripcionAdmin += '<li>autor: ' + (r.autor || 'NA') + '</li>';
                         descripcionAdmin += '<li>depto: ' + (r.departamento || 'NA') + '</li>';
@@ -47,7 +46,6 @@ $(document).ready(function () {
                             </tr>
                         `;
 
-                        // ---- CATALOGO ----
                         let icono = iconoPorTipo(r.tipo);
                         templateCatalogo += `
                             <tr>
@@ -57,13 +55,12 @@ $(document).ready(function () {
                                 <td>${r.lenguaje || ''}</td>
                                 <td>${r.descripcion || ''}</td>
                                 <td>
-                                <a href="${API}/download/${r.id_recurso || r.id}" target="_blank">
+                                  <a href="${API}/download/${r.id_recurso || r.id}" target="_blank">
                                     <img src="${icono}" width="30">
-                                </a>
+                                  </a>
                                 </td>
                             </tr>
                         `;
-                        // ---- CATALOGO ----
                     });
 
                     $('#recursos-admin').html(templateAdmin);
@@ -76,21 +73,16 @@ $(document).ready(function () {
         });
     }
 
-    //FUNCIÓN PARA INSERTAR ICONOS
     function iconoPorTipo(tipo) {
         tipo = (tipo || '').toLowerCase();
-
         if (tipo === 'pdf') return './assets/icons/pdf.png';
         if (tipo === 'zip') return './assets/icons/zip.png';
         if (tipo === 'jar') return './assets/icons/jar.png';
         if (tipo === 'exe') return './assets/icons/exe.png';
         if (tipo === 'json') return './assets/icons/json.png';
         if (tipo === 'xml') return './assets/icons/xml.png';
-
         return './assets/icons/default.png';
     }
-    //FUNCIÓN PARA INSERTAR ICONOS
-
 
     // BUSCADOR
     $('#search').keyup(function () {
@@ -103,7 +95,7 @@ $(document).ready(function () {
                 success: function (response) {
                     const recursos = safeParse(response) || [];
 
-                    if (Object.keys(recursos).length > 0) {
+                    if (recursos.length > 0) {
                         let templateAdmin = '';
                         let templateCatalogo = '';
                         let template_bar = '';
@@ -128,6 +120,7 @@ $(document).ready(function () {
                                 </tr>
                             `;
 
+                            let icono = iconoPorTipo(r.tipo);
                             templateCatalogo += `
                                 <tr>
                                     <td>${r.id_recurso || r.id}</td>
@@ -136,9 +129,9 @@ $(document).ready(function () {
                                     <td>${r.lenguaje || ''}</td>
                                     <td>${r.descripcion || ''}</td>
                                     <td>
-                                        <a class="btn btn-success btn-sm" href="${r.archivo}" target="_blank">
-                                            Descargar
-                                        </a>
+                                      <a href="${API}/download/${r.id_recurso || r.id}" target="_blank">
+                                        <img src="${icono}" width="30">
+                                      </a>
                                     </td>
                                 </tr>
                             `;
@@ -148,7 +141,6 @@ $(document).ready(function () {
 
                         $('#recurso-result').show();
                         $('#container').html(template_bar);
-
                         $('#recursos-admin').html(templateAdmin);
                         $('#recursos-catalogo').html(templateCatalogo);
                     }
@@ -161,12 +153,11 @@ $(document).ready(function () {
         }
     });
 
-    // SUBMIT FORM
+    // SUBMIT FORM (tu misma lógica)
     $('#recurso-form').submit(e => {
         e.preventDefault();
 
         let errores = [];
-
         const nombre = $('#nombre').val().trim();
         const descripcion = $('#descripcion').val().trim();
         const archivoFile = $('#archivo')[0].files[0];
@@ -177,7 +168,6 @@ $(document).ready(function () {
         if (descripcion.length > 250)
             errores.push('->Descripción menor a 250 caracteres.');
 
-        // si es nuevo (no editando), archivo es obligatorio
         if (!edit && !archivoFile)
             errores.push('->Selecciona un archivo.');
 
@@ -189,7 +179,6 @@ $(document).ready(function () {
             return;
         }
 
-        // ---------- FormData ----------
         let formData = new FormData();
         formData.append('nombre', $('#nombre').val());
         formData.append('autor', $('#autor').val());
@@ -200,18 +189,12 @@ $(document).ready(function () {
         formData.append('tipo', $('#tipo').val());
         formData.append('lenguaje', $('#lenguaje').val());
 
-        // solo si el usuario eligió archivo
-        if (archivoFile) {
-            formData.append('archivo', archivoFile);
-        }
-
+        if (archivoFile) formData.append('archivo', archivoFile);
         formData.append('id', $('#recursoId').val());
 
         const url = API + '/product';
 
-        if (edit === false) {
-
-            // POST con archivo
+        if (!edit) {
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -221,48 +204,41 @@ $(document).ready(function () {
                 success: function (response) {
                     let respuesta = safeParse(response);
 
-                    let template_bar = `
-                    <li style="list-style: none;">status: ${respuesta.status}</li>
-                    <li style="list-style: none;">message: ${respuesta.message}</li>
-                `;
-
                     $('#nombre, #autor, #departamento, #empresa, #fecha_creacion, #descripcion, #tipo, #lenguaje').val('');
                     $('#archivo').val('');
                     $('#recursoId').val('');
 
                     $('#recurso-result').show();
-                    $('#container').html(template_bar);
+                    $('#container').html(`
+                      <li style="list-style:none;">status: ${respuesta.status}</li>
+                      <li style="list-style:none;">message: ${respuesta.message}</li>
+                    `);
 
                     listarRecursos();
                     edit = false;
                     $('button.btn-primary').text('Agregar Recurso');
                 }
             });
-
         } else {
-
-            // PUT con archivo opcional
             $.ajax({
                 url: url,
-                type: 'POST',          // truco simple: mandamos POST y Slim lo trata igual
+                type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
-                headers: { "X-HTTP-Method-Override": "PUT" },  // para que Slim lo lea como PUT
+                headers: { "X-HTTP-Method-Override": "PUT" },
                 success: function (response) {
                     let respuesta = safeParse(response);
-
-                    let template_bar = `
-                    <li style="list-style: none;">status: ${respuesta.status}</li>
-                    <li style="list-style: none;">message: ${respuesta.message}</li>
-                `;
 
                     $('#nombre, #autor, #departamento, #empresa, #fecha_creacion, #descripcion, #tipo, #lenguaje').val('');
                     $('#archivo').val('');
                     $('#recursoId').val('');
 
                     $('#recurso-result').show();
-                    $('#container').html(template_bar);
+                    $('#container').html(`
+                      <li style="list-style:none;">status: ${respuesta.status}</li>
+                      <li style="list-style:none;">message: ${respuesta.message}</li>
+                    `);
 
                     listarRecursos();
                     edit = false;
@@ -271,128 +247,53 @@ $(document).ready(function () {
             });
         }
     });
-       // SUBMIT FORM
 
+    // ELIMINAR (ya adentro del ready)
+    $(document).on('click', '.recurso-delete', function () {
+        if (confirm('¿Realmente deseas eliminar el recurso?')) {
+            const $row = $(this).closest('tr');
+            const id = $row.attr('recursoId');
 
-    let errores = [];
-
-    if (postData.nombre.trim() === '' || postData.nombre.length > 100)
-        errores.push('->El nombre es obligatorio');
-
-    if ((postData.descripcion || '').length > 250)
-        errores.push('->Descripción menor a 250 caracteres.');
-
-    if (postData.archivo.trim() === '')
-        errores.push('->El archivo es obligatorio.');
-
-    if (errores.length > 0) {
-        let template_bar = '<li style="list-style:none; font-weight:bold;">Error de envío:</li>';
-        errores.forEach(err => {
-            template_bar += `<li style="list-style:none;">${err}</li>`;
-        });
-
-        $('#recurso-result').show();
-        $('#container').html(template_bar);
-        return;
-    }
-
-    const url = API + '/product';
-
-    if (edit === false) {
-        // POST /product
-        $.post(url, postData, (response) => {
-            let respuesta = safeParse(response);
-
-            let template_bar = `
-                    <li style="list-style: none;">status: ${respuesta.status}</li>
-                    <li style="list-style: none;">message: ${respuesta.message}</li>
-                `;
-
-            $('#nombre, #autor, #departamento, #empresa, #fecha_creacion, #descripcion, #tipo, #lenguaje, #archivo').val('');
-            $('#recursoId').val('');
-
-            $('#recurso-result').show();
-            $('#container').html(template_bar);
-
-            listarRecursos();
-            edit = false;
-            $('button.btn-primary').text('Agregar Recurso');
-        });
-
-    } else {
-        // PUT /product
-        $.ajax({
-            url: url,
-            type: 'PUT',
-            data: postData,
-            success: function (response) {
-                let respuesta = safeParse(response);
-
-                let template_bar = `
-                        <li style="list-style: none;">status: ${respuesta.status}</li>
-                        <li style="list-style: none;">message: ${respuesta.message}</li>
-                    `;
-
-                $('#nombre, #autor, #departamento, #empresa, #fecha_creacion, #descripcion, #tipo, #lenguaje, #archivo').val('');
-                $('#recursoId').val('');
-
-                $('#recurso-result').show();
-                $('#container').html(template_bar);
-
-                listarRecursos();
-                edit = false;
-                $('button.btn-primary').text('Agregar Recurso');
-            }
-        });
-    }
-});
-
-// ELIMINAR
-$(document).on('click', '.recurso-delete', (e) => {
-    if (confirm('¿Realmente deseas eliminar el recurso?')) {
-        const element = $(this)[0].activeElement.parentElement.parentElement;
-        const id = $(element).attr('recursoId');
-
-        $.ajax({
-            url: API + '/product',
-            type: 'DELETE',
-            data: { id },
-            success: function () {
-                $('#recurso-result').hide();
-                listarRecursos();
-            }
-        });
-    }
-});
-
-// AUTOLLENAR PARA EDITAR (solo en admin)
-$(document).on('click', '.recurso-item', function (e) {
-    e.preventDefault();
-
-    const $row = $(e.target).closest('tr');
-    const id = $row.attr('recursoId');
-
-    $.ajax({
-        url: API + '/product/' + id,
-        type: 'GET',
-        success: function (response) {
-            let data = safeParse(response);
-            const r = Array.isArray(data) ? (data[0] || {}) : data;
-
-            $('#nombre').val(r.nombre || '');
-            $('#recursoId').val(r.id_recurso || r.id || '');
-            $('#autor').val(r.autor || '');
-            $('#departamento').val(r.departamento || '');
-            $('#empresa').val(r.empresa || '');
-            $('#fecha_creacion').val(r.fecha_creacion || '');
-            $('#descripcion').val(r.descripcion || '');
-            $('#tipo').val(r.tipo || '');
-            $('#lenguaje').val(r.lenguaje || '');
-            $('#archivo').val(r.archivo || '');
-
-            edit = true;
-            $('button.btn-primary').text('Modificar Recurso');
+            $.ajax({
+                url: API + '/product',
+                type: 'DELETE',
+                data: { id },
+                success: function () {
+                    $('#recurso-result').hide();
+                    listarRecursos();
+                }
+            });
         }
     });
-});
 
+    // EDITAR (ya adentro del ready)
+    $(document).on('click', '.recurso-item', function (e) {
+        e.preventDefault();
+
+        const $row = $(e.target).closest('tr');
+        const id = $row.attr('recursoId');
+
+        $.ajax({
+            url: API + '/product/' + id,
+            type: 'GET',
+            success: function (response) {
+                let data = safeParse(response);
+                const r = Array.isArray(data) ? (data[0] || {}) : data;
+
+                $('#nombre').val(r.nombre || '');
+                $('#recursoId').val(r.id_recurso || r.id || '');
+                $('#autor').val(r.autor || '');
+                $('#departamento').val(r.departamento || '');
+                $('#empresa').val(r.empresa || '');
+                $('#fecha_creacion').val(r.fecha_creacion || '');
+                $('#descripcion').val(r.descripcion || '');
+                $('#tipo').val(r.tipo || '');
+                $('#lenguaje').val(r.lenguaje || '');
+
+                edit = true;
+                $('button.btn-primary').text('Modificar Recurso');
+            }
+        });
+    });
+
+});
