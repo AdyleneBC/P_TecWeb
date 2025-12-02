@@ -19,8 +19,8 @@ use MYAPI\Delete\Delete;
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
 
-// AJUSTA ESTA RUTA A TU PROYECTO FINAL
-$app->setBasePath('/proyectos/tecweb/proyecto/backend');
+//RUTA DEL PROYECTO A BACK
+$app->setBasePath('/proyectos/Proyecto_Tecweb/P_TecWeb/backend');
 
 $app->addRoutingMiddleware();
 
