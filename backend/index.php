@@ -4,6 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Slim\Middleware\MethodOverrideMiddleware;
 
 require_once __DIR__ . '/myapi/DataBase.php';
 require_once __DIR__ . '/myapi/Create/Create.php';
@@ -18,8 +19,9 @@ use MYAPI\Delete\Delete;
 
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
+$app->add(new MethodOverrideMiddleware());
 
-//RUTA DEL PROYECTO A BACK
+// RUTA DEL PROYECTO A BACK
 $app->setBasePath('/proyectos/Proyecto_Tecweb/P_TecWeb/backend');
 
 $app->addRoutingMiddleware();
@@ -30,7 +32,7 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
 // GET /products -> lista recursos
 $app->get('/products', function (Request $request, Response $response) {
-    $read = new Read("dashboard_recursos"); // <-- tu BD
+    $read = new Read("dashboard_recursos");
     $read->list();
     $response->getBody()->write(json_encode($read->getData()));
     return $response->withHeader('Content-Type', 'application/json');
@@ -52,29 +54,34 @@ $app->get('/products/{search}', function (Request $request, Response $response, 
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// POST /product -> crear recurso
+// POST /product -> crear o modificar (según venga id)
 $app->post('/product', function (Request $request, Response $response) {
+
     $params = (array)$request->getParsedBody();
+    if (empty($params)) {
+        $params = $_POST; // por si viene multipart/form-data
+    }
 
-    $create = new Create("dashboard_recursos");
-    $create->add($params);
+    $id = intval($params['id'] ?? 0);
 
-    $resp = $create->getData();
+    if ($id > 0) {
+        // UPDATE si viene id
+        $update = new Update("dashboard_recursos");
+        $update->edit($params);
+        $resp = $update->getData();
+    } else {
+        // CREATE si NO viene id
+        $create = new Create("dashboard_recursos");
+        $create->add($params);
+        $resp = $create->getData();
+    }
+
     $response->getBody()->write($resp);
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// PUT /product -> modificar recurso
-$app->put('/product', function (Request $request, Response $response) {
-    $params = (array)$request->getParsedBody();
-
-    $update = new Update("dashboard_recursos");
-    $update->edit($params);
-
-    $resp = $update->getData();
-    $response->getBody()->write($resp);
-    return $response->withHeader('Content-Type', 'application/json');
-});
+// (ya no se usa PUT porque el POST decide si crea o actualiza)
+// $app->put('/product', function (Request $request, Response $response) { ... });
 
 // DELETE /product -> eliminar lógico
 $app->delete('/product', function (Request $request, Response $response) {
@@ -89,7 +96,6 @@ $app->delete('/product', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-/**/
 // GET /download/{id}  -> descarga + bitácora
 $app->get('/download/{id}', function (Request $request, Response $response, array $args) {
 
@@ -107,7 +113,7 @@ $app->get('/download/{id}', function (Request $request, Response $response, arra
     $row = $q->fetch_assoc();
     $archivo = $row['archivo'];
 
-    // 2) guardar bitacora (si ya la estás usando)
+    // 2) guardar bitacora
     $ip = $_SERVER['REMOTE_ADDR'];
     $cn->query("INSERT INTO bitacora_descargas(id_recurso_fk, ip) VALUES($id,'$ip')");
 
@@ -127,7 +133,5 @@ $app->get('/download/{id}', function (Request $request, Response $response, arra
         ->withHeader("Content-Disposition", "attachment; filename=" . basename($ruta))
         ->withBody($stream);
 });
-
-/* */
 
 $app->run();
