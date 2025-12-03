@@ -5,161 +5,172 @@
     <meta charset="UTF-8">
     <title>ResourceApp</title>
 
-    <!-- BOOTSTRAP 4 (Bootswatch Solar) -->
+    <!-- BOOTSTRAP 4 (Bootswatch Slate) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/slate/bootstrap.min.css">
+
+    <style>
+        /* sidebar simple */
+        #sidebar {
+            min-height: 100vh;
+            background: #222;
+            padding-top: 20px;
+        }
+
+        #sidebar .nav-link {
+            color: #ddd;
+        }
+
+        #sidebar .nav-link.active {
+            background: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href=".">ResourceApp</a>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarColor01">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Dashboard</a>
-                </li>
-            </ul>
-
-            <!-- BUSCADOR GLOBAL (sirve para ambos tabs) -->
-            <form id="search-form" class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" name="search" id="search" type="search"
-                    placeholder="Buscar por nombre, autor, tipo..." aria-label="Search">
-                <button class="btn btn-success my-2 my-sm-0" type="submit">Buscar</button>
-            </form>
-        </div>
-    </nav>
-
-    <div class="container p-4">
-
-        <!-- TABS / PESTAÑAS -->
-        <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="gestion-tab" data-toggle="tab" href="#gestion" role="tab"
-                    aria-controls="gestion" aria-selected="true">
-                    Gestión de Recursos
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="catalogo-tab" data-toggle="tab" href="#catalogo" role="tab"
-                    aria-controls="catalogo" aria-selected="false">
-                    Catálogo (Visitantes)
-                </a>
-            </li>
-        </ul>
-
-        <div class="tab-content" id="mainTabsContent">
+    <div class="container-fluid">
+        <div class="row">
 
             <!-- ========================= -->
-            <!-- TAB 1: GESTIÓN / SUBIR -->
+            <!-- SIDEBAR IZQUIERDA -->
             <!-- ========================= -->
-            <div class="tab-pane fade show active" id="gestion" role="tabpanel" aria-labelledby="gestion-tab">
+            <div class="col-md-2" id="sidebar">
+                <h5 class="text-center text-light mb-4">ResourceApp</h5>
 
-                <div class="row">
-                    <!-- FORMULARIO -->
-                    <div class="col-md-5">
-                        <div class="card">
-                            <div class="card-body">
-                                <form id="recurso-form">
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" id="nombre"
-                                            placeholder="Nombre del recurso" maxlength="100">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" id="autor" placeholder="Autor"
-                                            maxlength="100">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" id="departamento"
-                                            placeholder="Departamento" maxlength="100">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" id="empresa"
-                                            placeholder="Empresa / Institución" maxlength="120">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input class="form-control" type="date" id="fecha_creacion">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <textarea class="form-control" id="descripcion" rows="3"
-                                            placeholder="Descripción (máx 250)" maxlength="250"></textarea>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" id="tipo"
-                                            placeholder="Tipo/Extensión (pdf, zip, jar...)" maxlength="20">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" id="lenguaje"
-                                            placeholder="Lenguaje (php, js, java...)" maxlength="40">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <!-- Archivo: por ahora texto, luego lo cambiamos a file -->
-                                    <div class="form-group">
-                                        <input class="form-control" type="file" id="archivo">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <input type="hidden" id="recursoId">
-
-                                    <button class="btn btn-primary btn-block text-center" type="submit">
-                                        Agregar Recurso
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- LISTA / TABLA ADMIN -->
-                    <div class="col-md-7">
-                        <div class="card my-4" id="recurso-result" style="display:none;">
-                            <div class="card-body">
-                                <ul id="container"></ul>
-                            </div>
-                        </div>
-
-                        <table class="table table-bordered table-sm">
-                            <thead>
-                                <tr>
-                                    <td>ID</td>
-                                    <td>Recurso</td>
-                                    <td>Descripción</td>
-                                    <td>Acción</td>
-                                </tr>
-                            </thead>
-                            <tbody id="recursos-admin"></tbody>
-                        </table>
-                    </div>
-                </div>
+                <ul class="nav flex-column nav-pills" id="sideMenu">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#gestion">
+                            Gestión de Recursos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#catalogo">
+                            Catálogo (Visitantes)
+                        </a>
+                    </li>
+                </ul>
             </div>
 
-
             <!-- ========================= -->
-            <!-- TAB 2: CATÁLOGO -->
+            <!-- CONTENIDO PRINCIPAL -->
             <!-- ========================= -->
-            <div class="tab-pane fade" id="catalogo" role="tabpanel" aria-labelledby="catalogo-tab">
+            <div class="col-md-10 p-4">
 
-                <div class="row">
-                    <div class="col-12">
+                <!-- BUSCADOR CENTRADO -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mx-auto">
+                        <form id="search-form" class="form-inline justify-content-center">
+                            <input class="form-control mr-2 w-75" name="search" id="search" type="search"
+                                placeholder="Buscar por nombre, autor, tipo...">
+                            <button class="btn btn-success" type="submit">Buscar</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- TABS -->
+                <div class="tab-content" id="mainTabsContent">
+
+                    <!-- ========================= -->
+                    <!-- TAB 1: GESTIÓN / SUBIR -->
+                    <!-- ========================= -->
+                    <div class="tab-pane fade show active" id="gestion" role="tabpanel">
+
+                        <div class="row">
+                            <!-- FORMULARIO -->
+                            <div class="col-md-5">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <form id="recurso-form">
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" id="nombre"
+                                                    placeholder="Nombre del recurso" maxlength="100">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" id="autor" placeholder="Autor"
+                                                    maxlength="100">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" id="departamento"
+                                                    placeholder="Departamento" maxlength="100">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" id="empresa"
+                                                    placeholder="Empresa / Institución" maxlength="120">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input class="form-control" type="date" id="fecha_creacion">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <textarea class="form-control" id="descripcion" rows="3"
+                                                    placeholder="Descripción (máx 250)" maxlength="250"></textarea>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" id="tipo"
+                                                    placeholder="Tipo/Extensión (pdf, zip, jar...)" maxlength="20">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" id="lenguaje"
+                                                    placeholder="Lenguaje (php, js, java...)" maxlength="40">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input class="form-control" type="file" id="archivo">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+
+                                            <input type="hidden" id="recursoId">
+
+                                            <button class="btn btn-primary btn-block text-center" type="submit">
+                                                Agregar Recurso
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LISTA ADMIN -->
+                            <div class="col-md-7">
+                                <div class="card my-4" id="recurso-result" style="display:none;">
+                                    <div class="card-body">
+                                        <ul id="container"></ul>
+                                    </div>
+                                </div>
+
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <td>ID</td>
+                                            <td>Recurso</td>
+                                            <td>Descripción</td>
+                                            <td>Acción</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recursos-admin"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================= -->
+                    <!-- TAB 2: CATÁLOGO -->
+                    <!-- ========================= -->
+                    <div class="tab-pane fade" id="catalogo" role="tabpanel">
 
                         <div class="card my-2">
                             <div class="card-body">
@@ -183,23 +194,23 @@
                         </div>
 
                     </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
+                </div><!-- tab-content -->
+            </div><!-- col main -->
+        </div><!-- row -->
+    </div><!-- container-fluid -->
 
 
     <!-- JQUERY -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-    <!-- Bootstrap JS (para que funcionen los tabs y el navbar) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
 
-    <!-- Tu JS (luego lo adaptamos) -->
+    <!-- Tu JS -->
     <script src="app.js"></script>
+
 </body>
 
 </html>
