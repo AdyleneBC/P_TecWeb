@@ -164,7 +164,7 @@ $(document).ready(function () {
         $el.next('.invalid-feedback').text('').hide();
     }
 
-    // -------- VALIDACIONES BLUR --------
+    //VALIDACIONEScon blur***************************************
 
     $('#nombre').blur(function () {
         const v = $(this).val().trim();
@@ -248,12 +248,12 @@ $(document).ready(function () {
         }
     });
 
-    // -------- FIN VALIDACIONES BLUR --------
+    //FIN VALIDACIONES BLUR***************************************
 
 
     //////////////////////////VALIDACIÓN
 
-    // SUBMIT FORM (tu misma lógica)
+    //SUBMIT FORM
     $('#recurso-form').submit(e => {
         e.preventDefault();
 
@@ -272,7 +272,7 @@ $(document).ready(function () {
             errores.push('->Selecciona un archivo.');
 
         if (errores.length > 0) {
-            // solo marcamos inputs en rojo, sin barra
+            // solo marcamos inputs en rojo, ya no usamos la barra
             $('#nombre').blur();
             $('#autor').blur();
             $('#departamento').blur();
@@ -355,7 +355,7 @@ $(document).ready(function () {
         }
     });
 
-    // ELIMINAR (ya adentro del ready)
+    // ELIMINAR
     $(document).on('click', '.recurso-delete', function () {
         if (confirm('¿Realmente deseas eliminar el recurso?')) {
             const $row = $(this).closest('tr');
@@ -373,7 +373,7 @@ $(document).ready(function () {
         }
     });
 
-    // EDITAR (ya adentro del ready)
+    // EDITAR
     $(document).on('click', '.recurso-item', function (e) {
         e.preventDefault();
 
@@ -405,8 +405,7 @@ $(document).ready(function () {
 
 });
 
-// ====== DASHBOARD ======********************************************************************
-
+//DASHBOARD funciones********************************************************************
 function cargarDashboard() {
     graficaTipo();
     graficaLenguaje();
@@ -508,10 +507,10 @@ function graficaTop5() {
 }
 
 
-// cuando abras el tab dashboard, carga gráficas
+// cuando abrimos el tab dashboard, carga gráficas
 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
     if ($(e.target).attr("href") === "#dashboard") {
         cargarDashboard();
     }
 });
-// ====== DASHBOARD ======********************************************************************
+//fin DASHBOARD funciones********************************************************************
