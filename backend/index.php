@@ -202,6 +202,31 @@ $app->get('/stats/dia', function (Request $request, Response $response) {
     $response->getBody()->write(json_encode($data));
     return $response->withHeader('Content-Type', 'application/json');
 });
+
+// 4) TOP 5 recursos mas descargados
+$app->get('/stats/top5', function (Request $request, Response $response) {
+
+    $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
+
+    $q = $cn->query("
+        SELECT r.nombre, COUNT(*) AS total
+        FROM bitacora_descargas b
+        JOIN recursos r ON r.id_recurso = b.id_recurso_fk
+        GROUP BY r.nombre
+        ORDER BY total DESC
+        LIMIT 5
+    ");
+
+    $data = [];
+    while ($row = $q->fetch_assoc()) {
+        $data[] = $row;
+    }
+    $cn->close();
+
+    $response->getBody()->write(json_encode($data));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
 // ====== DASHBOARD STATS ======********************************
 
 $app->run();

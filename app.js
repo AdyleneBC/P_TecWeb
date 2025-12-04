@@ -411,6 +411,7 @@ function cargarDashboard() {
     graficaTipo();
     graficaLenguaje();
     graficaDia();
+    graficaTop5();
 }
 
 function graficaTipo() {
@@ -481,6 +482,31 @@ function graficaDia() {
         });
     });
 }
+
+function graficaTop5() {
+    $.get(API + "/stats/top5", function (resp) {
+
+        let labels = [];
+        let data = [];
+
+        resp.forEach(x => {
+            labels.push(x.nombre);
+            data.push(x.total);
+        });
+
+        new Chart(document.getElementById("chartTop5"), {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Descargas",
+                    data: data
+                }]
+            }
+        });
+    });
+}
+
 
 // cuando abras el tab dashboard, carga gráficas
 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
