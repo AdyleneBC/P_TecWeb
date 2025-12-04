@@ -134,4 +134,74 @@ $app->get('/download/{id}', function (Request $request, Response $response, arra
         ->withBody($stream);
 });
 
+
+
+// ====== DASHBOARD STATS ======********************************
+
+// 1) descargas por tipo
+$app->get('/stats/tipo', function (Request $request, Response $response) {
+    $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
+
+    $q = $cn->query("
+        SELECT r.tipo, COUNT(*) AS total
+        FROM bitacora_descargas b
+        JOIN recursos r ON r.id_recurso = b.id_recurso_fk
+        GROUP BY r.tipo
+        ORDER BY total DESC
+    ");
+
+    $data = [];
+    while ($row = $q->fetch_assoc()) {
+        $data[] = $row;
+    }
+    $cn->close();
+
+    $response->getBody()->write(json_encode($data));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+// 2) descargas por lenguaje
+$app->get('/stats/lenguaje', function (Request $request, Response $response) {
+    $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
+
+    $q = $cn->query("
+        SELECT r.lenguaje, COUNT(*) AS total
+        FROM bitacora_descargas b
+        JOIN recursos r ON r.id_recurso = b.id_recurso_fk
+        GROUP BY r.lenguaje
+        ORDER BY total DESC
+    ");
+
+    $data = [];
+    while ($row = $q->fetch_assoc()) {
+        $data[] = $row;
+    }
+    $cn->close();
+
+    $response->getBody()->write(json_encode($data));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+// 3) descargas por día
+$app->get('/stats/dia', function (Request $request, Response $response) {
+    $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
+
+    $q = $cn->query("
+        SELECT DAYNAME(b.fecha) AS dia, COUNT(*) AS total
+        FROM bitacora_descargas b
+        GROUP BY dia
+        ORDER BY total DESC
+    ");
+
+    $data = [];
+    while ($row = $q->fetch_assoc()) {
+        $data[] = $row;
+    }
+    $cn->close();
+
+    $response->getBody()->write(json_encode($data));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+// ====== DASHBOARD STATS ======********************************
+
 $app->run();

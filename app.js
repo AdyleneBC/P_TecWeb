@@ -403,3 +403,88 @@ $(document).ready(function () {
     });
 
 });
+
+// ====== DASHBOARD ======********************************************************************
+
+function cargarDashboard() {
+    graficaTipo();
+    graficaLenguaje();
+    graficaDia();
+}
+
+function graficaTipo() {
+    $.get(API + "/stats/tipo", function (resp) {
+        let labels = [];
+        let data = [];
+
+        resp.forEach(x => {
+            labels.push(x.tipo || "NA");
+            data.push(x.total);
+        });
+
+        new Chart(document.getElementById("chartTipo"), {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Descargas",
+                    data: data
+                }]
+            }
+        });
+    });
+}
+
+function graficaLenguaje() {
+    $.get(API + "/stats/lenguaje", function (resp) {
+        let labels = [];
+        let data = [];
+
+        resp.forEach(x => {
+            labels.push(x.lenguaje || "NA");
+            data.push(x.total);
+        });
+
+        new Chart(document.getElementById("chartLenguaje"), {
+            type: "pie",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Descargas",
+                    data: data
+                }]
+            }
+        });
+    });
+}
+
+function graficaDia() {
+    $.get(API + "/stats/dia", function (resp) {
+        let labels = [];
+        let data = [];
+
+        resp.forEach(x => {
+            labels.push(x.dia);
+            data.push(x.total);
+        });
+
+        new Chart(document.getElementById("chartDia"), {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Descargas",
+                    data: data
+                }]
+            }
+        });
+    });
+}
+
+// cuando abras el tab dashboard, carga gráficas
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    if ($(e.target).attr("href") === "#dashboard") {
+        cargarDashboard();
+    }
+});
+// ====== DASHBOARD ======********************************************************************
