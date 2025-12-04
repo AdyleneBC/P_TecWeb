@@ -211,14 +211,15 @@ $(document).ready(function () {
         }
     });
 
-    $('#tipo').blur(function () {
+    $('#tipo').on('blur change', function () {
         const v = $(this).val().trim();
         if (v === '') {
-            setError($(this), 'Tipo obligatorio.');
+            setError($(this), 'Selecciona un tipo.');
         } else {
             clearError($(this));
         }
     });
+
 
     $('#lenguaje').blur(function () {
         const v = $(this).val().trim();
