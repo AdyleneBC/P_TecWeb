@@ -30,7 +30,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
-// GET /products -> lista recursos
+// GET /products----lista recursos
 $app->get('/products', function (Request $request, Response $response) {
     $read = new Read("dashboard_recursos");
     $read->list();
@@ -38,7 +38,7 @@ $app->get('/products', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// GET /product/{id} -> recurso individual
+// GET /product/{id}-----recurso individual
 $app->get('/product/{id}', function (Request $request, Response $response, array $args) {
     $read = new Read("dashboard_recursos");
     $read->single($args['id']);
@@ -46,7 +46,7 @@ $app->get('/product/{id}', function (Request $request, Response $response, array
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// GET /products/{search} -> buscar recurso
+// GET /products/{search}----buscar recurso
 $app->get('/products/{search}', function (Request $request, Response $response, array $args) {
     $read = new Read("dashboard_recursos");
     $read->search($args['search']);
@@ -54,7 +54,8 @@ $app->get('/products/{search}', function (Request $request, Response $response, 
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// POST /product -> crear o modificar (según venga id)
+// POST /product----crear o modificar
+//Este es mi conflicto por el PUT, porque el post decide por el id, si modificar o crear
 $app->post('/product', function (Request $request, Response $response) {
 
     $params = (array)$request->getParsedBody();
@@ -65,12 +66,12 @@ $app->post('/product', function (Request $request, Response $response) {
     $id = intval($params['id'] ?? 0);
 
     if ($id > 0) {
-        // UPDATE si viene id
+        //UPDATE si hay id
         $update = new Update("dashboard_recursos");
         $update->edit($params);
         $resp = $update->getData();
     } else {
-        // CREATE si NO viene id
+        //CREATE si NO hay id
         $create = new Create("dashboard_recursos");
         $create->add($params);
         $resp = $create->getData();
@@ -80,10 +81,10 @@ $app->post('/product', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// (ya no se usa PUT porque el POST decide si crea o actualiza)
-// $app->put('/product', function (Request $request, Response $response) { ... });
+//ya no se usa PUT porque el POST decide si crea o actualiza
+//$app->put
 
-// DELETE /product -> eliminar lógico
+// DELETE /product +----- eliminar lógico
 $app->delete('/product', function (Request $request, Response $response) {
     $params = (array)$request->getParsedBody();
     $id = $params['id'] ?? 0;
@@ -96,14 +97,14 @@ $app->delete('/product', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// GET /download/{id}  -> descarga + bitácora
+// GET /download/{id}---- descarga + bitácora
 $app->get('/download/{id}', function (Request $request, Response $response, array $args) {
 
     $id = intval($args['id']);
 
     $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
 
-    // 1) buscar el recurso
+    //
     $q = $cn->query("SELECT archivo FROM recursos WHERE id_recurso=$id AND eliminado=0");
     if ($q->num_rows == 0) {
         $response->getBody()->write("No existe el recurso");
@@ -113,13 +114,13 @@ $app->get('/download/{id}', function (Request $request, Response $response, arra
     $row = $q->fetch_assoc();
     $archivo = $row['archivo'];
 
-    // 2) guardar bitacora
+    //
     $ip = $_SERVER['REMOTE_ADDR'];
     $cn->query("INSERT INTO bitacora_descargas(id_recurso_fk, ip) VALUES($id,'$ip')");
 
     $cn->close();
 
-    // 3) forzar descarga
+    //
     $ruta = __DIR__ . "/../assets/uploads/" . $archivo;
     if (!file_exists($ruta)) {
         $response->getBody()->write("Archivo no encontrado");
@@ -136,9 +137,9 @@ $app->get('/download/{id}', function (Request $request, Response $response, arra
 
 
 
-// ====== DASHBOARD STATS ======********************************
+//DASHBOARD STATS*******************************************************
 
-// 1) descargas por tipo
+//descargas por tipo
 $app->get('/stats/tipo', function (Request $request, Response $response) {
     $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
 
@@ -160,7 +161,7 @@ $app->get('/stats/tipo', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// 2) descargas por lenguaje
+//descargas por lenguaje
 $app->get('/stats/lenguaje', function (Request $request, Response $response) {
     $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
 
@@ -182,7 +183,7 @@ $app->get('/stats/lenguaje', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// 3) descargas por día
+//descargas por día
 $app->get('/stats/dia', function (Request $request, Response $response) {
     $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
 
@@ -203,7 +204,7 @@ $app->get('/stats/dia', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// 4) TOP 5 recursos mas descargados
+//TOP 5 recursos mas descargados
 $app->get('/stats/top5', function (Request $request, Response $response) {
 
     $cn = new mysqli("localhost", "root", "adylene", "dashboard_recursos");
@@ -227,6 +228,6 @@ $app->get('/stats/top5', function (Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// ====== DASHBOARD STATS ======********************************
+//FIN DASHBOARD STATS*******************************************************
 
 $app->run();
