@@ -1,10 +1,6 @@
 <?php
 /**
- * ARCHIVO UNIFICADO DE CONEXIÓN A BASE DE DATOS
- * 
- * UBICACIÓN: C:\xampp\htdocs\Proyecto_Final\config\Database.php
- * 
- * PROPÓSITO: Centralizar todas las conexiones a bases de datos
+ * Aqui se centraliza todas las conexiones a las bases de datos (la clase database unificada)
  */
 
 namespace Config;
