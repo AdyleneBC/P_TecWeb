@@ -220,50 +220,51 @@
 
                     </div>
 
-                    <!--************************dashboard********************************-->
+                    <!--*dashboard*-->
                     <div class="tab-pane fade" id="dashboard" role="tabpanel">
-
                         <div class="row">
-                            <div class="col-md-6">
+
+                            <!-- fila 1: tres gráficas -->
+                            <div class="col-md-4">
                                 <div class="card mb-3">
                                     <div class="card-body">
                                         <h6>Descargas por tipo</h6>
-                                        <canvas id="chartTipo"></canvas>
+                                        <canvas id="chartTipo" height="300"></canvas>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="card mb-3">
                                     <div class="card-body">
                                         <h6>Descargas por lenguaje</h6>
-                                        <canvas id="chartLenguaje"></canvas>
+                                        <canvas id="chartLenguaje" height="160"></canvas>
                                     </div>
                                 </div>
                             </div>
 
+                            <div class="col-md-4">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h6>Top 5 recursos más descargados</h6>
+                                        <canvas id="chartTop5" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- fila 2: gráfica por día abajo, ancho completo -->
                             <div class="col-md-12">
                                 <div class="card mb-3">
                                     <div class="card-body">
                                         <h6>Descargas por día</h6>
-                                        <canvas id="chartDia"></canvas>
+                                        <canvas id="chartDia" height="100"></canvas>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-md-12">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h6>Top 5 recursos más descargados</h6>
-                                    <canvas id="chartTop5"></canvas>
-                                </div>
-                            </div>
                         </div>
-
                     </div>
-                    <!--************************dashboard********************************-->
-
+                    <!--*dashboard*-->
 
                 </div>
             </div>
