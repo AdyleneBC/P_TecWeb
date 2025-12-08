@@ -11,6 +11,11 @@ if (isset($_SESSION["user_id"])) {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 }
+        //Es una redireccion para el usuario si esta logueado mandarlo al frontend o la app
+if ($user) {
+    header("Location: /Proyecto_final/Frontend/index.html");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -36,8 +41,7 @@ if (isset($_SESSION["user_id"])) {
                 <div class="card-body">
                     <p>Aquí podrás <strong>definir y gestionar el catálogo de productos</strong>.</p>
                     <ul class="list-group">
-                        <li><a href="admin/catalog.php">Gestionar Catálogo</a></li>
-                        <li><a href="admin/users.php">Gestionar Usuarios</a></li>
+                        <li><a href="Frontend/index.html">Ir a ResourceApp</a></li> 
                     </ul>
                 </div>
             </div>
