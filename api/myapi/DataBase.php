@@ -1,18 +1,12 @@
 <?php
 /**
  * ARCHIVO: api/myapi/DataBase.php
- * 
- * UBICACIÓN: C:\xampp\htdocs\Proyecto_Final\api\myapi\DataBase.php
- * 
- * PROPÓSITO: Clase base para operaciones CRUD
- * MODIFICACIÓN: Ahora usa la clase Database unificada
+ *  Es la clase para todas las operaciones CRUD, partiendfo de la clase Database unificada
  */
 
 namespace MYAPI;
 
-// ============================================
-// CARGAMOS LA CLASE DATABASE UNIFICADA
-// ============================================
+// Se carga la clase Database unificada
 require_once __DIR__ . "/../../config/Database.php";
 
 use Config\Database as ConfigDatabase;
@@ -25,18 +19,13 @@ abstract class DataBase
     // Arreglo donde guardaremos los datos que regresan las consultas
     protected $data;
 
-    // ============================================
-    // CONSTRUCTOR MODIFICADO
-    // Ya no necesita user, pass, db como parámetros
-    // ============================================
+    // Ya no necesita pasarse datos
+ 
     public function __construct()
     {
         $this->data = array();
         
-        // ============================================
-        // USAR LA CLASE DATABASE UNIFICADA
-        // Conectamos a dashboard_recursos
-        // ============================================
+        // la conectamos a dashboard_recursos
         $this->conexion = ConfigDatabase::getResourcesConnection();
         
         if (!$this->conexion) {
