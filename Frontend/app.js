@@ -1,7 +1,89 @@
 // ruta base del backend
 const API = "./backend";
 
+// ============================================ Verificamos la sesion para poder controlar el acceso por rol
+function checkUserSession() {
+    $.ajax({
+        url: '../check_session.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            
+            console.log('Respuesta de check_session:', response); // DEBUG
+            
+            // Si no se encuentra alguna sesión activa, se redirige al login
+            if (!response.logged_in) {
+                console.log('No hay sesión, redirigiendo...'); // debig
+                window.location.href = '../login.php';
+                return;
+            }
+
+            // Si hay sesión activa, obtenemos los datos del usuario
+            const user = response.user;
+            
+            console.log('Usuario logueado:', user.name, '- Rol:', user.role); // debug
+            
+            // Mostramos el nombre del usuario en el sidebar
+            $('#userName').text('Hola, ' + user.name);
+
+            // ============================================
+            // LÓGICA MEJORADA DE CONTROL DE ACCESO POR ROL
+            // ============================================ Agregamos un control de acceso por rol
+            if (user.role === 'admin') {
+                console.log('Mostrando vista de ADMINISTRADOR'); // debug
+                
+                // El administrador puede ver todo 
+                $('#tabGestion').show();
+                $('#tabDashboard').show();
+                $('#tabCatalogo').show();
+                
+                // El tab activo por defecto es "Gestión"
+                $('#gestion').addClass('show active');
+                $('#catalogo').removeClass('show active');
+                $('#dashboard').removeClass('show active');
+                
+                $('a[href="#gestion"]').addClass('active');
+                $('a[href="#catalogo"]').removeClass('active');
+                $('a[href="#dashboard"]').removeClass('active');
+                
+            } else if (user.role === 'visitor') {
+                console.log('Mostrando vista de VISITANTE'); // DEBUG
+                
+                // El usuario solo puede ver el catálogo
+                $('#tabGestion').hide(); // Oculta tab de Gestión
+                $('#tabDashboard').hide(); // Oculta tab de Dashboard
+                $('#tabCatalogo').show(); // Muestra solo Catálogo
+                
+                // El tab activo por defecto es "Catálogo"
+                $('#catalogo').addClass('show active');
+                $('#gestion').removeClass('show active');
+                $('#dashboard').removeClass('show active');
+                
+                $('a[href="#catalogo"]').addClass('active');
+                $('a[href="#gestion"]').removeClass('active');
+                $('a[href="#dashboard"]').removeClass('active');
+                
+                //  Activamos el tab de cátalogo programáticamente
+                setTimeout(function() {
+                    $('a[href="#catalogo"]').tab('show');
+                }, 100);
+                
+            } else {
+                console.error('Rol desconocido:', user.role); // debug
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error al verificar sesión:', error); // debug
+            window.location.href = '../login.php';
+        }
+    });
+}
+
 $(document).ready(function () {
+    
+    //  Llamamos a la funcion creada anteriormente para verificar la sesión
+    checkUserSession();
+    
     let edit = false;
 
     $('#recurso-result').hide();
@@ -164,7 +246,7 @@ $(document).ready(function () {
         $el.next('.invalid-feedback').text('').hide();
     }
 
-    //VALIDACIONEScon blur***************************************
+    //VALIDACIONES con blur***************************************
 
     $('#nombre').blur(function () {
         const v = $(this).val().trim();
