@@ -1,7 +1,5 @@
 <?php
-// ============================================
-// MODO DEBUG ACTIVADO
-// ============================================
+// Usamos un 'modo' debug
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -45,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
             echo "<!-- DEBUG: Sesión iniciada con user_id: " . $user["id"] . " -->\n";
             
-            // CORRECCIÓN: Verificar si hay descarga pendiente
+            // Verificamos si hay descarga pendiente
             if (isset($_SESSION['intended_download'])) {
                 $download_id = $_SESSION['intended_download'];
                 echo "<!-- DEBUG: Hay descarga pendiente ID: " . $download_id . " -->\n";
@@ -53,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // Limpiar la descarga pendiente de la sesión
                 unset($_SESSION['intended_download']);
                 
-                // Redirigir a la API de descarga (no a download_public.php)
+                // Redirigir a la API de descarga (OJO: no a download_public.php)
                 echo "<!-- DEBUG: Redirigiendo a descarga: /Proyecto_final/api/download/" . $download_id . " -->\n";
                 header("Location: /Proyecto_final/api/download/" . $download_id);
                 exit;
