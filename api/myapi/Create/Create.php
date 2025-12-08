@@ -1,9 +1,4 @@
 <?php
-/**
- * ARCHIVO: api/myapi/Create/Create.php
- * 
- * MODIFICACIÓN: Ya no necesita pasar credenciales al constructor
- */
 
 namespace MYAPI\Create;
 
@@ -13,10 +8,7 @@ class Create extends DataBase
 {
     public function __construct($db)
     {
-        // ============================================
-        // MODIFICACIÓN: Ya no pasamos user, pass, db
-        // La clase padre DataBase se encarga de todo
-        // ============================================
+        // No es necesario pasar datos, la clase padre DataBase se encarga de todo
         parent::__construct();
 
     }
@@ -40,9 +32,7 @@ class Create extends DataBase
             $archivoNombre = $_FILES['archivo']['name'];
             $tmp = $_FILES['archivo']['tmp_name'];
             
-            // ============================================
-            // MODIFICACIÓN: Ruta actualizada a la nueva estructura
-            // ============================================
+           
             $destino = __DIR__ . "/../../../app/assets/uploads/" . $archivoNombre;
             move_uploaded_file($tmp, $destino);
         }

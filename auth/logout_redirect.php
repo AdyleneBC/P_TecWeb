@@ -1,6 +1,6 @@
 <?php
 /**
- * ARCHIVO NUEVO: logout_redirect.php
+ * 
  *  Se usa para cerrar la sesion del usuario y redirigirlo al login
  */
 
