@@ -24,6 +24,11 @@
             background: #007bff;
             color: white;
         }
+
+        /* Agregamos un estilo nuevo para ocultar los elementos de acuerdo al rol */
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -36,25 +41,37 @@
             <div class="col-md-2" id="sidebar">
                 <h5 class="text-center text-light mb-4">ResourceApp</h5>
 
+                <!-- Agregamos la id 'userName' para mostrar el nombre del usuario logueado -->
+                <p class="text-center text-light" id="userName"></p>
+
                 <ul class="nav flex-column nav-pills" id="sideMenu">
-                    <li class="nav-item">
+                    <!-- Agregamos la id 'tabGestion' para que los administradores solo la vean -->
+                    <li class="nav-item" id="tabGestion">
                         <a class="nav-link active" data-toggle="tab" href="#gestion">
                             Gestión de Recursos
                         </a>
                     </li>
-                    <li class="nav-item">
+
+                    <!-- Agregamos la id 'tabCatalogo' para que todos los usuarios la vean -->
+                    <li class="nav-item" id="tabCatalogo">
                         <a class="nav-link" data-toggle="tab" href="#catalogo">
                             Catálogo (Visitantes)
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <!-- Agregamos la id 'tabDashboard' para que los administradores solo la vean -->
+                    <li class="nav-item" id="tabDashboard">
                         <a class="nav-link" data-toggle="tab" href="#dashboard">
                             Dashboard
                         </a>
                     </li>
 
                 </ul>
+
+                <!--Agregamos un boton para redirir a logout_redirect.php-->
+                <div class="text-center mt-4">
+                    <a href="../logout_redirect.php" class="btn btn-danger btn-sm">Cerrar sesión</a>
+                </div>
             </div>
 
             <!-- ************CONTENIDO PRINCIPAL de cada "TAB"************-->
