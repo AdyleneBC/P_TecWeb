@@ -1,12 +1,7 @@
 <?php
 /**
  * ARCHIVO NUEVO: logout_redirect.php
- * 
- * PROPÓSITO: Cerrar la sesión del usuario y redirigirlo al login.
- * Este archivo se llamará desde el botón de "Cerrar sesión" en el frontend.
- * 
- * UBICACIÓN: Colocar en la raíz del proyecto junto a logout.php
- * Ruta: C:\xampp\htdocs\Proyecto_Final\logout_redirect.php
+ *  Se usa para cerrar la sesion del usuario y redirigirlo al login
  */
 
 // Iniciamos la sesión para poder destruirla
