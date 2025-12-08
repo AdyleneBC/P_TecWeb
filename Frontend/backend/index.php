@@ -21,8 +21,8 @@ $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
 $app->add(new MethodOverrideMiddleware());
 
-// RUTA DEL PROYECTO A BACK
-$app->setBasePath('/proyectos/Proyecto_Tecweb/P_TecWeb/backend');
+// RUTA DEL PROYECTO A BACK mysql
+$app->setBasePath('/Proyecto_Final/Backend');
 
 $app->addRoutingMiddleware();
 
