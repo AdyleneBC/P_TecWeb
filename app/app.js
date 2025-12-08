@@ -1,4 +1,4 @@
-// ruta base del backend
+
 const API = "/Proyecto_final/api";
 
 
@@ -27,9 +27,7 @@ function checkUserSession() {
             // Mostramos el nombre del usuario en el sidebar
             $('#userName').text('Hola, ' + user.name);
 
-            // ============================================
-            // LÓGICA MEJORADA DE CONTROL DE ACCESO POR ROL
-            // ============================================ Agregamos un control de acceso por rol
+            // Agregamos un control de acceso por rol
             if (user.role === 'admin') {
                 console.log('Mostrando vista de ADMINISTRADOR'); // debug
                 
